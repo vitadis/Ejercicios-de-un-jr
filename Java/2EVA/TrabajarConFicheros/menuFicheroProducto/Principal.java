@@ -44,29 +44,11 @@ public class Principal {
 
 			case 2:
 				// creo otras vistas para que pueda ver, el principal, auxiliar y backup
-				int opcion = Util.leerInt("1. Auxiliar\n2. Principal\n3. Backup\nElige una opcion: ");
-				switch (opcion) {
-				case 1:
-					ArrayList<Producto> a = listado(archivoAux);
-					for (Producto p : a) {
-						System.out.println(p);
-					}
-					break;
-				case 2:
-					ArrayList<Producto> pri = listado(archivoPrin);
-					for (Producto p : pri) {
-						System.out.println(p);
-					}
-					break;
-				case 3:
-					ArrayList<Producto> b = listado(archivoBack);
-					for (Producto p : b) {
-						System.out.println(p);
-					}
-					break;
-				default:
-					System.out.println("Agraga una opcion valida");
+				ArrayList<Producto> pri = listado(archivoPrin);
+				for (Producto p : pri) {
+					System.out.println(p);
 				}
+
 				gestionar = false;
 
 				break;
@@ -103,9 +85,11 @@ public class Principal {
 				/*
 				 * usar un fichero auxiliar para guardar el ArrayList ordenado
 				 */
-				ordenarPorNombre(archivoAux);
+				ordenarPorNombre(archivoAux, archivoPrin);
 				break;
-
+			case 7:
+				ordenarStock(archivoAux, archivoPrin);
+				break;
 			default:
 				System.out.println("Agrega una opcion valida");
 				break;
@@ -234,8 +218,8 @@ public class Principal {
 		System.out.println("Producto no encontrado");
 	}
 
-	private static void ordenarPorNombre(File archivo) {
-		ArrayList<Producto> pe = listado(archivo);
+	private static void ordenarPorNombre(File archivo, File principal) {
+		ArrayList<Producto> pe = listado(principal);
 
 		CompararString criterio = new CompararString();
 
@@ -293,5 +277,24 @@ public class Principal {
 		} else {
 			System.out.println("Error: no se pudo crear el backup");
 		}
+	}
+
+	// ordenar por stock
+	private static void ordenarStock(File archivo, File principal) {
+		ArrayList<Producto> pe = listado(principal);
+		for (int i = 0; i < pe.size() - 1; i++) {
+			for (int y = i; y < pe.size() - 1 - i; y++) {
+
+				if (pe.get(y).getStock() > pe.get(y + 1).getStock()) {
+					Producto aux = pe.get(y);
+					Producto producto1 = pe.get(y + 1);
+					pe.set(y, producto1);
+					pe.set(y + 1, aux);
+				}
+			}
+
+		}
+		sobreEscribirArrayProducto(pe, archivo);
+
 	}
 }
